@@ -1,0 +1,14 @@
+{
+  "name": "quickbite-demo",
+  "private": true,
+  "type": "module",
+  "workspaces": ["apps/*"],
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "dev": "concurrently -k -n api,web \"npm run dev -w @quickbite/api\" \"npm run dev -w @quickbite/web\"",
+    "build": "npm run build -w @quickbite/web",
+    "test": "npm run test --workspaces --if-present",
+    "start": "npm run start -w @quickbite/api"
+  },
+  "devDependencies": { "concurrently": "^9.2.1" }
+}
