@@ -1,6 +1,6 @@
 # QuickBite Lite
 
-A local pickup-ordering demo built with Vue 3 and Express. The app provides a backend menu, customer menu and cart, checkout, order creation/listing APIs, and a connected staff order page. The complete customer-to-staff flow is implemented; the final acceptance walkthrough is next.
+A local pickup-ordering demo built with Vue 3 and Express. The app provides a backend menu, customer menu and cart, checkout, order creation/listing APIs, and a connected staff order page. The complete customer-to-staff flow is implemented; the user has completed manual testing after each step.
 
 See [PROJECT_SUMMARY.md](PROJECT_SUMMARY.md) for the agreed scope, architecture decisions, build order, and progress.
 
@@ -95,9 +95,10 @@ Orders start with status **New**. Use **Mark as Completed** on a staff card to s
 
 After checkout, choose **View order status** to open `/orders/:id`. Customers can save this link and use **Refresh status** to retrieve New/Completed from the backend after staff updates. Refreshing or reopening the URL works while the backend still holds the order. This is manual refresh, not live polling. The status endpoint exposes only ID/status. Loading, missing-order, and retry states are included; failed network refreshes label retained status as potentially stale. Orders still disappear after backend restart. This extension is beyond the original interview requirements.
 
-## Next implementation order
+## Verification completed
 
-1. Verify the full PRD acceptance flow in the browser, including mobile layout and failure feedback.
-2. Verify the optional completion flow in the browser: mark an order Completed and refresh to confirm it remains Completed.
+- [x] Required acceptance flow tested by the user after each implementation step.
+- [x] Staff completion and customer status refresh tested by the user.
+- [x] All 18 automated tests pass and the frontend production build succeeds.
 
 No authentication, payments, database, or deployment is included. Orders will only need to survive while the API process is running.

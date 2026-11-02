@@ -62,14 +62,14 @@ PostgreSQL is unnecessary for this exercise; in-memory order storage meets the r
 | --- | --- | --- | --- |
 | 1 | Workspace and application setup | Vue and Express apps configured, dependencies installed, local commands documented | Done |
 | 2 | Menu vertical slice | Backend menu repository, service, and route connected to the customer page | Implemented; API checks and frontend build pass |
-| 3 | Cart | Connect cart state and UI to reusable rules; add quantity controls and subtotal | Implemented; cart rules/state checks and frontend build pass; browser walkthrough pending |
+| 3 | Cart | Connect cart state and UI to reusable rules; add quantity controls and subtotal | Implemented; cart rules/state checks and frontend build pass; manual testing completed by the user |
 | 4 | Order backend | Add order service, in-memory repository, POST `/api/orders`, validation, server pricing, and order ID | Implemented; service and HTTP integration checks pass |
 | 5 | Customer checkout | Add name input, submission feedback, and confirmation; clear cart after success | Implemented; tests/build pass; user confirmed it works as expected |
-| 6 | Staff orders | Add GET `/api/orders` and connect `/staff` to the API | Implemented; repeated API reads and staff state/adapter tests pass; browser walkthrough pending |
-| 7 | Acceptance verification | Demonstrate the full flow and reject malformed direct API requests | Pending; setup checks pass |
-| 8 | Optional improvements | Completed status and small UI refinements | P1 status implemented; automated tests/build pass; browser walkthrough pending |
+| 6 | Staff orders | Add GET `/api/orders` and connect `/staff` to the API | Implemented; repeated API reads and staff state/adapter tests pass; manual testing completed by the user |
+| 7 | Acceptance verification | Demonstrate the full flow and reject malformed direct API requests | Completed; user tested each step and automated validation checks pass |
+| 8 | Optional improvements | Completed status and small UI refinements | P1 status implemented; automated tests/build pass; manual testing completed by the user |
 
-The local Git repository has its `origin` set to the GitHub repository above. The completed demo is being committed and pushed at the user's request. Implementation-stage verification notes below record what was checked at each milestone; the user has now confirmed the demo is finished. Final automated checks: all 18 tests pass and the frontend build succeeds.
+The local Git repository has its `origin` set to the GitHub repository above. The completed demo was committed and pushed to master (initial commit 9d29e09). Implementation-stage verification notes below record what was checked at each milestone; the user has now confirmed the demo is finished. Final automated checks: all 18 tests pass and the frontend build succeeds.
 
 ## API and data plan
 
@@ -103,13 +103,15 @@ For a 45-minute exercise, aim to complete the customer-to-staff flow by minute 3
 
 ## Acceptance checklist
 
-- [ ] Menu displays at least six dishes loaded from the backend.
-- [ ] Add two different dishes, change quantity, remove an item, and verify subtotal.
-- [ ] Blank customer name and empty cart produce clear validation feedback.
-- [ ] Valid submission returns an order ID and confirmation.
-- [ ] Staff page displays the order with correct details and server-calculated subtotal, including after refresh.
-- [ ] Direct malformed requests with invalid IDs or quantities are rejected by the backend.
-- [ ] Customer and staff views are readable at mobile and desktop widths.
+Completed based on the user's confirmation that testing was performed after each step, together with the passing automated API and frontend checks. Recorded November 2, 2026.
+
+- [x] Menu displays at least six dishes loaded from the backend.
+- [x] Add two different dishes, change quantity, remove an item, and verify subtotal.
+- [x] Blank customer name and empty cart produce clear validation feedback.
+- [x] Valid submission returns an order ID and confirmation.
+- [x] Staff page displays the order with correct details and server-calculated subtotal, including after refresh.
+- [x] Direct malformed requests with invalid IDs or quantities are rejected by the backend.
+- [x] Customer and staff views are readable at mobile and desktop widths.
 
 ## Local commands and verification
 
@@ -127,20 +129,20 @@ npm.cmd test
 npm.cmd run build
 ```
 
-After Step 6, all 14 tests pass: four API/service tests and ten frontend cart/checkout/staff tests. Order checks cover server pricing despite tampered client prices, repeated IDs, trimmed names, timestamps, unique IDs, malformed orders, quantity/total overflow, storage isolation, no partial writes, and repeated order-list reads. Checkout checks cover name/cart validation, blocking concurrent submissions, ID/quantity-only payloads, server confirmation totals, clearing only after success, retaining state on failure, and invalid responses. Staff checks cover refresh, failure recovery, preserving previous results, and response validation. The frontend production build also passes. The user confirmed that the cart and checkout work as expected; the staff browser walkthrough remains pending. See [README.md](README.md) for the source layout and additional startup details.
+After Step 6, all 14 tests pass: four API/service tests and ten frontend cart/checkout/staff tests. Order checks cover server pricing despite tampered client prices, repeated IDs, trimmed names, timestamps, unique IDs, malformed orders, quantity/total overflow, storage isolation, no partial writes, and repeated order-list reads. Checkout checks cover name/cart validation, blocking concurrent submissions, ID/quantity-only payloads, server confirmation totals, clearing only after success, retaining state on failure, and invalid responses. Staff checks cover refresh, failure recovery, preserving previous results, and response validation. The frontend production build also passes. The user confirmed that the cart and checkout work as expected; the user confirmed manual testing was completed after each step. See [README.md](README.md) for the source layout and additional startup details.
 
 Staff orders load on page entry and on manual refresh. Cards show saved order IDs, customer names, quantities/items, subtotal, submission time in English using the browser's local timezone, and New/Completed status. Loading, empty, and error states are implemented. Failed refreshes retain the previous list with a stale-data warning. There is no automatic polling.
 
 P1 implementation: orders are created as New. Staff can mark them Completed, with the status saved in the backend repository and returned by subsequent refreshes. Completion is idempotent, unsupported statuses are rejected with HTTP 400, and unknown orders return HTTP 404. UI updates wait for server confirmation and prevent overlapping refresh/update requests; failures preserve the previous displayed status and offer recovery guidance. Reopening completed orders is outside the current scope.
 
-After P1, all 15 tests pass and the frontend build succeeds. Added checks cover default New status, successful/repeated completion, rejecting invalid transitions and missing IDs, status persistence across API refreshes, frontend request shape, pending-action guards, and failure recovery. P1 browser verification remains pending.
+After P1, all 15 tests pass and the frontend build succeeds. Added checks cover default New status, successful/repeated completion, rejecting invalid transitions and missing IDs, status persistence across API refreshes, frontend request shape, pending-action guards, and failure recovery. P1 manual testing was completed by the user.
 
 ### Customer status extension (authorized after P1)
 
 Implemented `/orders/:id`, linked as **View order status** from checkout confirmation. Customers can save/reopen the link and manually refresh to see backend New/Completed status. No automatic polling is included. The status API returns only ID/status, and its service/repository/route boundaries follow the existing architecture. Unknown orders show a clear message, including the in-memory restart limitation; network errors preserve the last known status with a stale-data notice. Late results from a previous order cannot overwrite the current route's status.
 
-Verification after this extension: all 18 tests pass and the frontend build succeeds. Added coverage includes customer status before/after staff completion, missing orders, no-cache behavior, frontend refresh/recovery, API response validation, and navigation race handling. Customer status browser walkthrough remains pending.
+Verification after this extension: all 18 tests pass and the frontend build succeeds. Added coverage includes customer status before/after staff completion, missing orders, no-cache behavior, frontend refresh/recovery, API response validation, and navigation race handling. Customer status manual testing was completed by the user.
 
 Checkout disables menu Add actions, cart edits, and repeat submissions while sending. Success displays the returned order ID, customer name, and authoritative subtotal, then clears the cart/name. Errors preserve both. Pending state is shared across route navigation. Network failures can leave the server outcome uncertain, so the UI advises checking before retrying; automatic retries and backend request deduplication are not included.
 
-Cart state survives navigation between routes within the running frontend but resets on a full page reload. This is sufficient for the current demo; browser persistence is not part of Step 3. Checkout will use the cart's item IDs and quantities, with all prices validated independently by the order backend.
+Cart state survives navigation between routes within the running frontend but resets on a full page reload. This is sufficient for the current demo; browser persistence is not part of Step 3. Checkout uses the cart's item IDs and quantities, with all prices validated independently by the order backend.
